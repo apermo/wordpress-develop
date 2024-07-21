@@ -21,19 +21,12 @@ class WP_Debug_Data {
 	}
 
 	/**
-	 * Static function for generating site debug data when required.
+	 * Add the callbacks to the `debug_information` filter.
 	 *
-	 * @since 5.2.0
-	 * @since 5.3.0 Added database charset, database collation,
-	 *              and timezone information.
-	 * @since 5.5.0 Added pretty permalinks support information.
-	 *
-	 * @throws ImagickException
-	 *
-	 * @return array The debug data for the site.
+	 * @since tbd
 	 */
-	public static function debug_data(): array {
-		add_filter( 'debug_information', array( __CLASS__, 'wp_core' ), 0 );
+	public static function init_filters(): void {
+		add_filter( 'debug_information', array( __CLASS__, 'wp_core' ), 1 );
 		add_filter( 'debug_information', array( __CLASS__, 'wp_paths_sizes' ), 1 );
 		add_filter( 'debug_information', array( __CLASS__, 'wp_dropins' ), 2 );
 		add_filter( 'debug_information', array( __CLASS__, 'wp_active_theme' ), 3 );
@@ -51,6 +44,30 @@ class WP_Debug_Data {
 		if ( is_multisite() ) {
 			remove_filter( 'debug_information', array( __CLASS__, 'wp_paths_sizes' ), 1 );
 		}
+	}
+
+	/**
+	 * Static function for generating site debug data when required.
+	 *
+	 * @since 5.2.0
+	 * @since 5.3.0 Added database charset, database collation,
+	 *              and timezone information.
+	 * @since 5.5.0 Added pretty permalinks support information.
+	 *
+	 * @return array The debug data for the site.
+	 */
+	public static function debug_data(): array {
+		self::init_filters();
+
+		/**
+		 * Fires before the debug information is gathered.
+		 *
+		 * This hook allows you to alter, add, or remove debug information before it is gathered.
+		 *
+		 * @since tbd
+		 */
+		do_action( 'pre_debug_information' );
+
 
 		/**
 		 * Filters the debug information shown on the Tools -> Site Health -> Info screen.
@@ -353,6 +370,8 @@ class WP_Debug_Data {
 	/**
 	 * Populate the drop-ins section of the debug data.
 	 *
+	 * Using the {@see 'debug_information'} filter for this.
+	 *
 	 * @since tbd
 	 *
 	 * @param array $info The debug information to be added to the core information page.
@@ -391,6 +410,8 @@ class WP_Debug_Data {
 
 	/**
 	 * Populate the active theme section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
@@ -539,7 +560,9 @@ class WP_Debug_Data {
 	}
 
 	/**
-	 * Populate the parent section of the debug data.
+	 * Populate the parent theme section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
@@ -655,6 +678,8 @@ class WP_Debug_Data {
 
 	/**
 	 * Populate the inactive themes section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
@@ -789,6 +814,8 @@ class WP_Debug_Data {
 	/**
 	 * Populate the must-use plugins section of the debug data.
 	 *
+	 * Using the {@see 'debug_information'} filter for this.
+	 *
 	 * @since tbd
 	 *
 	 * @param array $info The debug information to be added to the core information page.
@@ -843,6 +870,8 @@ class WP_Debug_Data {
 
 	/**
 	 * Populate the plugins section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
@@ -985,6 +1014,8 @@ class WP_Debug_Data {
 
 	/**
 	 * Populate the media section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
@@ -1181,6 +1212,8 @@ class WP_Debug_Data {
 	/**
 	 * Populate the server section of the debug data.
 	 *
+	 * Using the {@see 'debug_information'} filter for this.
+	 *
 	 * @since tbd
 	 *
 	 * @param array $info The debug information to be added to the core information page.
@@ -1376,7 +1409,11 @@ class WP_Debug_Data {
 	/**
 	 * Populate the database section of the debug data.
 	 *
+	 * Using the {@see 'debug_information'} filter for this.
+	 *
 	 * @since tbd
+	 *
+	 * @global wpdb $wpdb WordPress database abstraction object.
 	 *
 	 * @param array $info The debug information to be added to the core information page.
 	 *
@@ -1461,6 +1498,8 @@ class WP_Debug_Data {
 
 	/**
 	 * Populate the WordPress constant section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
@@ -1616,6 +1655,8 @@ class WP_Debug_Data {
 
 	/**
 	 * Populate the file system section of the debug data.
+	 *
+	 * Using the {@see 'debug_information'} filter for this.
 	 *
 	 * @since tbd
 	 *
